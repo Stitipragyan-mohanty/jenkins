@@ -1,0 +1,39 @@
+####pipelinejob:example
+
+pipeline {
+    agent any
+
+    stages {
+        stage('stage-1') {
+            steps {
+                git branch: 'main', url: 'https://github.com/CloudTechDevOps/project-1-maven-jenkins-CICD-docker-eks-.git'
+            }
+        }
+   
+        stage('clean') {
+            steps {
+              sh  'mvn clean'
+            }
+        }
+        
+        stage('test') {
+            steps {
+              sh  'mvn test'
+            }
+        }
+        stage('install') {
+            steps {
+               sh  'mvn install'
+            }
+        }
+        
+        stage('deployment') {
+            steps {
+                
+              deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://13.201.99.121:8081/')], contextPath: null, war: '/*.war '
+
+            }
+        }
+        
+    }
+}
